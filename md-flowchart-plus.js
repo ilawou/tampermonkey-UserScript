@@ -5,7 +5,6 @@
 // @description  Markdown Mermaid, flowchart, sequence, plantuml 使用
 // @author       junhong.wu
 // @match        http://172.16.1.160:8080/*
-// @match        https://github.com/*
 // @grant        none
 // ==/UserScript==
 (function() {
@@ -44,7 +43,7 @@
         };
 
         var _replace_mermaid_code = function(){
-          $('pre.lang-mermaid, pre.lang-Mermaid').each(function(i){
+          $('pre.lang-mermaid, pre.lang-Mermaid, pre[lang="mermaid"]>code').each(function(i){
               var $pre = $(this);
               var preId = "__mermaid_pre_"+i;
               $pre.attr('id',preId);
@@ -55,12 +54,13 @@
               mermaid.mermaidAPI.render(preId, mermaidScript, function( code, bindFunctions ){ $('#'+id).html(code); });
           });
 
-          $('pre.lang-flow, pre.lang-Flow').each(function(i){
+          $('pre.lang-flow, pre.lang-Flow, pre[lang="flow"]>code').each(function(i){
               var $pre = $(this);
               var preId = "__flow_pre_"+i;
               $pre.attr('id',preId);
               $pre.hide();
               var flowScript = $pre.text();
+              //console.log('flowScript: ', flowScript);
               var id = "__flowchart_"+i;
               var $newDiv = $("<div id='"+id+"'></div>");
               $pre.after($newDiv);
@@ -69,12 +69,13 @@
 
           });
 
-          $('pre.lang-sequence, pre.lang-Sequence').each(function(i){
+          $('pre.lang-sequence, pre.lang-Sequence, pre[lang="sequence"]>code').each(function(i){
               var $pre = $(this);
               var preId = "__sequence_pre_"+i;
               $pre.attr('id',preId);
               $pre.hide();
               var sequenceScript = $pre.text();
+              //console.log('sequenceScript: ', sequenceScript);
               var id = "__sequence_"+i;
               var $newDiv = $("<div id='"+id+"'>"+sequenceScript+"</div>");
               $pre.after($newDiv);
@@ -83,12 +84,13 @@
               $newDiv.sequenceDiagram({theme: 'simple'});
           });
 
-          $('pre.lang-plantuml, pre.lang-Plantuml').each(function(i){
+          $('pre.lang-plantuml, pre.lang-Plantuml, pre[lang="plantuml"]>code').each(function(i){
               var $pre = $(this);
               var preId = "__plantuml_pre_"+i;
               $pre.attr('id',preId);
               $pre.hide();
               var plantumlScript = $pre.text();
+              //console.log('plantumlScript: ', plantumlScript);
               plantumlScript = plantumlScript.replaceAll('\n',';\n');
               var id = "__plantuml_"+i;
               var $newDiv = $("<div id='"+id+"'><img src='https://www.gravizo.com/svg?"+encodeURIComponent(plantumlScript)+"'></div>");
@@ -116,7 +118,7 @@
 
     if( typeof jQuery === 'undefined'){
        var lp_script_jq = document.createElement('script');
-        lp_script_jq.src = "//code.jquery.com/jquery-3.5.1.min.js";
+        lp_script_jq.src = "https://code.jquery.com/jquery-3.5.1.min.js";
         lp_script_jq.onload = function(){
            init();
         };
